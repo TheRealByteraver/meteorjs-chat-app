@@ -5,7 +5,12 @@
 <template name="mainContainer">
   <div class="container">
     <header>
-      <h1>ChatRooms</h1>
+      <h1>Hi{{getUsername}}, welcome to ChatApp!</h1>
+      {{#if getUsername}}
+      <div>
+        <button class="logout">Logout 🚪</button>
+      </div>     
+      {{/if}} 
     </header>
     
     {{#if isUserLogged}}
@@ -22,10 +27,11 @@
 
 <template name="chatRoom">
   <li>   
-    <h2>
-      [{{#each userIdList}}
+    <h2>Chatting with {{talkingTo}}
+      
+      <!-- [{{#each userIdList}}
         {{username}},       
-      {{/each}}]
+      {{/each}}] -->
     </h2>
     <ul data-chatRoomIndex="{{_id}}">
       {{#each messages}}
@@ -38,8 +44,8 @@
 
 <template name="message">
   <li>
+    {{author}} {{message}}
     <button class="delete" {{disabledAttr}}>&times;</button>
-    {{author}}: {{message}}
   </li>
 </template>
 
