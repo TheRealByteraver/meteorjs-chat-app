@@ -1,0 +1,51 @@
+<body>
+  {{> mainContainer}}
+</body>
+
+<template name="mainContainer">
+  <div class="container">
+    <header>
+      <h1>ChatRooms</h1>
+    </header>
+    
+    {{#if isUserLogged}}
+      <ul>
+        {{#each chatRooms}}
+          {{> chatRoom}}
+        {{/each}}
+      </ul>
+    {{else}}
+      {{> login }}
+    {{/if}}
+  </div>
+</template>
+
+<template name="chatRoom">
+  <li>   
+    <h2>
+      [{{#each userIdList}}
+        {{username}},       
+      {{/each}}]
+    </h2>
+    <ul data-chatRoomIndex="{{_id}}">
+      {{#each messages}}
+        {{> message}}
+      {{/each}}
+    </ul>
+    {{> form}}
+  </li>
+</template>
+
+<template name="message">
+  <li>
+    <button class="delete" {{disabledAttr}}>&times;</button>
+    {{author}}: {{message}}
+  </li>
+</template>
+
+<template name="form">
+  <form class="chat-form">
+    <input type="text" name="text" placeholder="Type your message here" />
+    <button type="submit">Send</button>
+  </form>
+</template>
