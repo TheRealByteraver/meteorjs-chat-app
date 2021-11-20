@@ -4,36 +4,37 @@
 
 <template name="mainContainer">
   <div class="container">
-    <header>
-      <h1>Hi{{getUsername}}, welcome to ChatApp!</h1>
+    <header class="header-container">
+      <h1 class="main-header">Hi{{getUsername}}, welcome to ChatApp!</h1>
       {{#if getUsername}}
-      <div>
-        <button class="logout">Logout 🚪</button>
-      </div>     
+        <button class="logout">Logout  🚪</button>
       {{/if}} 
     </header>
     
     {{#if isUserLogged}}
-      <ul>
-        {{#each chatRooms}}
-          {{> chatRoom}}
-        {{/each}}
-      </ul>
+      <div class="chatapp-container">
+        <ul class="chatroom-title-container">
+          {{#each chatRooms}}
+            <li><h3 class="chatroom-title">{{talkingTo}}</h3></li>
+          {{/each}}
+        </ul>
+
+        <ul class="chatroom-content-container">
+          {{#each chatRooms}}
+            {{> chatRoom}}
+          {{/each}}
+        </ul>  
+      </div>
     {{else}}
-      {{> login }}
+      {{> login}}
     {{/if}}
   </div>
 </template>
 
 <template name="chatRoom">
-  <li>   
-    <h2>Chatting with {{talkingTo}}
-      
-      <!-- [{{#each userIdList}}
-        {{username}},       
-      {{/each}}] -->
-    </h2>
-    <ul data-chatRoomIndex="{{_id}}">
+  <li class="chatroom-container">   
+    <h3>Chatting with {{talkingTo}}</h3>
+    <ul class="" data-chatRoomIndex="{{_id}}">
       {{#each messages}}
         {{> message}}
       {{/each}}
@@ -43,15 +44,15 @@
 </template>
 
 <template name="message">
-  <li>
+  <li class="message-and-button-container">
     {{author}} {{message}}
-    <button class="delete" {{disabledAttr}}>&times;</button>
+    <button class="delete-message" {{disabledAttr}}>&times;</button>
   </li>
 </template>
 
 <template name="form">
   <form class="chat-form">
-    <input type="text" name="text" placeholder="Type your message here" />
+    <input class="form-text-input" type="text" name="text" placeholder="Type your message here" />
     <button type="submit">Send</button>
   </form>
 </template>

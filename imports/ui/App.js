@@ -106,6 +106,12 @@ Template.form.events({
     const target = event.target;
     const text = target.text.value;
 
+    // don't add empty messages to the chat
+    if(text == '') {
+      return;
+    }
+    // console.log(`text: #${text}#`);
+
     // Insert a task into the collection
     // Meteor.call('tasks.insert', text);
     const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
@@ -127,7 +133,7 @@ Template.form.events({
 });
 
 Template.message.events({
-  'click .delete'() {
+  'click .delete-message'() {
     ChatMessagesCollection.remove(this._id);
   },
 });
