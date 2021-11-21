@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating';
-import { ChatRoomsCollection } from '../api/ChatRoomsCollection';
-import { ChatMessagesCollection } from '../api/ChatMessagesCollection';
+import { ChatRoomsCollection } from '../db/ChatRoomsCollection';
+import { ChatMessagesCollection } from '../db/ChatMessagesCollection';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
 import './App.html';
@@ -140,7 +140,6 @@ Template.mainContainer.helpers({
       talkingTo: getTalkingToStr(chatRoom),
       messages: getMessages(chatRoom),
     };
-    // console.log('retObj: ', retObj);
     return [retObj];
   },
   isUserLogged() {
@@ -148,7 +147,6 @@ Template.mainContainer.helpers({
   },
   getUsername() {
     const user = getUser();
-    // console.log('user: ', user);
     return user
       ? ` ${user.username}`
       : ''; 
@@ -168,28 +166,19 @@ Template.form.events({
     if(text == '') {
       return;
     }
-    // Insert a chat message into the collection
-    // Meteor.call('chatMessage.insert', text);
-    const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
-    const currentUser = getUser();
+    // const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
+    const chatRoomId = 
+      Template.instance().data._id; // ??? why does this work?
 
-    ChatMessagesCollection.insert({
-      chatRoomId,
-      author: {
-        userId: currentUser._id,   
-        username: currentUser.username, 
-      },
-        createdAt: new Date(), 
-        message: text
-    });
+    Meteor.call('chatMessages.insert', chatRoomId, text);
 
-    // Clear form
+      // Clear form
     target.text.value = '';
   },
 });
 
 Template.message.events({
   'click .delete-message'() {
-    ChatMessagesCollection.remove(this._id);
+    Meteor.call('chatMessages.remove', this._id);
   },
 });

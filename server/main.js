@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
-import { ChatRoomsCollection } from '../imports/api/ChatRoomsCollection';
-import { ChatMessagesCollection } from '../imports/api/ChatMessagesCollection';
+import { ChatRoomsCollection } from '../imports/db/ChatRoomsCollection';
+import { ChatMessagesCollection } from '../imports/db/ChatMessagesCollection';
+import '../imports/api/chatMessagesMethods';
 
 /*
   The 'insertChatRoom' function takes in an array of user objects. 
