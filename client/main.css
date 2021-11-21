@@ -91,7 +91,8 @@ ul {
   min-width: 240px;
   width: 25%;
 
-  padding: .5rem;
+  /* padding: .5rem; */
+  /* padding-top: 0.5rem; */
   border-right: 1px solid #DFD3C3;
 
 
@@ -100,7 +101,16 @@ ul {
 
 .chatroom-title {
   display: flex;
+  padding-left: .5rem;
   width: 100%;
+
+  /* border: 3px solid cyan; */
+}
+
+.chatroom-title:hover {
+  color: #596E79;
+  background-color: #DFD3C3;
+  cursor: pointer;
 }
 
 .chatroom-content-container {
@@ -117,9 +127,12 @@ ul {
 }
 
 .chatroom-container {
-  margin: 1rem;
+  padding: 1rem 1rem 0 1rem;
+  height: 100%;
   width: 100%;
   border-bottom: 1px solid #596E79;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .message-list {

@@ -14,21 +14,34 @@
     {{#if isUserLogged}}
       <div class="chatapp-container">
         <ul class="chatroom-title-container">
-          {{#each chatRooms}}
-            <li><h3 class="chatroom-title">{{talkingTo}}</h3></li>
+          {{#each chatRoomTitles}}
+            <li><h3 class="chatroom-title" data-chatRoomIndex="{{_id}}">{{talkingTo}}</h3></li>
           {{/each}}
         </ul>
 
         <ul class="chatroom-content-container">
-          {{#each chatRooms}}
+          {{#each activeChatRoom}}
             {{> chatRoom}}
           {{/each}}
+          <!-- {{> activeChatRoom}} -->
         </ul>  
       </div>
     {{else}}
       {{> login}}
     {{/if}}
   </div>
+</template>
+
+<template name="activeChatRoom">
+  <li class="chatroom-container">   
+    <h3>Chatting with {{talkingTo}}</h3>
+    <ul class="" data-chatRoomIndex="{{_id}}">
+      {{#each messages}}
+        {{> message}}
+      {{/each}}
+    </ul>
+    {{> form}}
+  </li>
 </template>
 
 <template name="chatRoom">
