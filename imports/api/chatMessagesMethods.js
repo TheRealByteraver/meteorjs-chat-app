@@ -32,7 +32,6 @@ Meteor.methods({
 
     const user = 
       chatRoom.userIdList.filter(user => (user.userId === currentUser._id));
-    // console.log('Found user Id in list: ', user);
 
     // Second, check if the current user is included in this chatRoom
     if (!user) {

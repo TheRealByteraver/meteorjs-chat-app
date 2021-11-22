@@ -7,6 +7,8 @@ import './App.html';
 import './Login.js';
 
 const SELECTED_CHATROOM_STRING = 'selectedChatRoom';
+const IS_CHATMESSAGE_LOADING_STRING = 'isChatMessageLoading';
+const IS_CHATROOM_LOADING_STRING = 'isChatRoomLoading';
 
 // Helper functions
 const getUser = () => Meteor.user();
@@ -71,30 +73,32 @@ const getCurrentUserChatRooms = () => {
   const currentUser = getUser();
   return ChatRoomsCollection.find(
     // filter: only select chatRooms where this user is taking part
-    { userIdList: 
-      { 
-        "userId" : currentUser._id, 
-        "username" : currentUser.username 
-      } 
-    },
+    { 'userIdList.userId': currentUser._id },
     // oldest first
     { sort: { createdAt: 1 } }
   );
 }
 
-Template.mainContainer.onCreated(function mainContainerOnCreated() {
+Template.mainContainer.onCreated(function mainContainerOnCreated() { 
   this.state = new ReactiveDict();
+
+  // ?
+  const chatMessageHandler = Meteor.subscribe('chatMessages');
+  const chatRoomHandler = Meteor.subscribe('chatRooms');
+  Tracker.autorun(() => {
+    this.state.set(IS_CHATMESSAGE_LOADING_STRING, !chatMessageHandler.ready()); 
+  });
+  Tracker.autorun(() => {
+    this.state.set(IS_CHATROOM_LOADING_STRING, !chatRoomHandler.ready()); 
+  });
+
 });
 
 Template.mainContainer.events({
   'click .chatroom-title'(event, instance) {
-
-    instance.state.set(SELECTED_CHATROOM_STRING, event.target.dataset.chatroomindex);
-
-    // debug:
-    // const currentSelectedChatRoom = instance.state.get(SELECTED_CHATROOM_STRING);
-    // console.log('chatroom id: ', event.target.dataset.chatroomindex);
-    // console.log('currently selected chatroom id: ', currentSelectedChatRoom);
+    // set active chatroom to the one selected by the user
+    instance.state.set(SELECTED_CHATROOM_STRING, 
+      event.target.dataset.chatroomindex);
   },
   'click .logout'() {
     Meteor.logout();
@@ -102,6 +106,10 @@ Template.mainContainer.events({
 });
 
 Template.mainContainer.helpers({
+  isLoading() { // ??? not used
+    const instance = Template.instance();
+    return instance.state.get(IS_LOADING_STRING);
+  },
   chatRoomTitles() {
     const chatRooms = getCurrentUserChatRooms();
 
@@ -124,7 +132,6 @@ Template.mainContainer.helpers({
     const currentSelectedChatRoom = 
       Template.instance().state.get(SELECTED_CHATROOM_STRING);
 
-    // console.log('currentSelectedChatRoom: ', currentSelectedChatRoom);
     if (!currentSelectedChatRoom) {
       return [{
         _id: 0,   
@@ -133,14 +140,12 @@ Template.mainContainer.helpers({
       }];
     }
     const chatRoom = ChatRoomsCollection.findOne( { _id: currentSelectedChatRoom } );
-    // console.log('found chatRoom: ', chatRoom);
-
-    const retObj = {
+    // todo: don't return array of chatRooms, it's always only one chatRoom
+    return [{
       ...chatRoom,   
       talkingTo: getTalkingToStr(chatRoom),
       messages: getMessages(chatRoom),
-    };
-    return [retObj];
+    }];
   },
   isUserLogged() {
     return isUserLogged();
