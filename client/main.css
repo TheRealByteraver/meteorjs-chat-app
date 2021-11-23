@@ -54,7 +54,7 @@ ul {
   /* border: 2px solid yellow; */
 }
 
-.logout {
+.logout-button {
   color: #F0ECE3;
   background-color: #C7B198;
   border: 2px solid #F0ECE3;
@@ -65,7 +65,7 @@ ul {
   padding: .75rem 2rem;
 }
 
-.logout:hover {
+.logout-button:hover {
   cursor: pointer;
 }
 
@@ -126,20 +126,32 @@ ul {
   /* border: 3px solid red; */
 }
 
-/*
-todo: https://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to-bottom-unless-user-scrolls-up
-*/
+.chatroom-content-title {  
+  padding-left: .25rem;
+  padding-top: .25rem;
+  height: 2rem;
+  width: 100%;
+  border-bottom: 1px solid #596E79;
+
+  /* border: 2px solid fuchsia; */
+}
+
 .chatroom-container {
+  display: flex;
+  flex-direction: column-reverse;
   padding: 1rem 1rem 0 1rem;
-  height: 100%;
+  height: calc(100% - 2rem);
   width: 100%;
   border-bottom: 1px solid #596E79;
   overflow-x: hidden;
   overflow-y: scroll;
+
+  /* border: 2px solid green; */
 }
 
 .message-list {
   display: flex;
+  flex-direction: column;
 
   /* border: 2px solid darkcyan; */
 }
@@ -147,7 +159,39 @@ todo: https://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to
 .message-and-button-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: center;
+
+  background-color: white;
+  border-radius: .5rem;
+  padding: 1rem;
+  margin: .5rem 0;
+  width: fit-content;
+
+  /* border: 2px solid orange; */
+}
+
+.float-message-right {
+  align-self: flex-end;
+  justify-content: flex-end;
+
+  color: #F0ECE3;
+  background-color: #596E79;
+}
+
+.delete-message-button {
+  background-color: #C7B198;
+  border: 2px solid #F0ECE3;
+  border-radius: .25rem;
+  color: white;
+  font-size: 1.25rem;
+  margin-left: 1rem;
+  outline: none;
+  padding: 0 .25rem;
+}
+
+.delete-message-button:hover {
+  cursor: pointer;
 }
 
 .chat-form {
@@ -155,12 +199,47 @@ todo: https://stackoverflow.com/questions/18614301/keep-overflow-div-scrolled-to
   flex-direction: row;
   justify-content: space-between;
 
+  font-size: 1.25rem;
+  height: fit-content;
+
   margin-top: .25rem;
   margin-bottom: 1rem;
 
-  /* border: 2px solid gray; */
+  /* border: 2px solid red; */
 }
 
 .form-text-input {
-  /* justify-self: stretch; */
+  color: #596E79;
+  flex-grow: 1;
+  font-size: 1.25rem;
+  border: 2px solid #C7B198;
+  border-radius: .5rem;
+  margin-right: .25rem;
+  padding-left: 1rem;
+}
+
+/* .form-text-input:placeholder {
+  font-size: .25rem;
+} */
+
+.form-text-input:focus {
+  outline: none;
+  border: 2px solid #596E79;
+}
+
+.form-submit-button {
+  flex-basis: 6rem;
+  color: #F0ECE3;
+  background-color: #C7B198;
+  /* border: 2px solid #F0ECE3; */
+  border: none;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  outline: none;
+  /* margin: 1.5rem; */
+  padding: .75rem 2rem;
+}
+
+.form-submit-button:hover {
+  cursor: pointer;
 }

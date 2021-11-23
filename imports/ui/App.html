@@ -7,7 +7,7 @@
     <header class="header-container">
       <h1 class="main-header">Hi{{getUsername}}, welcome to ChatApp!</h1>
       {{#if getUsername}}
-        <button class="logout">Logout  🚪</button>
+        <button class="logout-button">Logout  🚪</button>
       {{/if}} 
     </header>
     
@@ -25,19 +25,23 @@
           {{/each}}
         </ul>
 
-        <ul class="chatroom-content-container">
-          <li class="chatroom-container">
+        <div class="chatroom-content-container">
+          {{#if talkingTo}}   
+            <h3 class="chatroom-content-title">
+              Chatting with {{talkingTo}}:
+            </h3>
+          {{/if}}
+          <div class="chatroom-container">
             {{#if talkingTo}}   
-            <h3>Chatting with {{talkingTo}}</h3>
-            <ul class="" data-chatRoomIndex="{{activeChatRoom_id}}">
-              {{#each messages}}
-                {{> message}}
-              {{/each}}
-            </ul>
-            {{> form}}
+              {{> form}}
+              <ul class="message-list" data-chatRoomIndex="{{activeChatRoomId}}">
+                {{#each messages}}
+                  {{> message}}
+                {{/each}}
+              </ul>
             {{/if}}
-          </li>
-        </ul>  
+          </div>
+        </div>  
       </div>
     {{else}}
       {{> login}}
@@ -46,9 +50,11 @@
 </template>
 
 <template name="message">
-  <li class="message-and-button-container">
+  <li class="message-and-button-container {{floatRightClass}}">
     {{authorStr}} {{message}}
-    <button class="delete-message" {{disabledAttr}}>&times;</button>
+    {{#if floatRightClass}}
+      <button class="delete-message-button">&times;</button>
+    {{/if}}
   </li>
 </template>
 
@@ -60,6 +66,6 @@
       name="text" 
       placeholder="Type your message here" 
     />
-    <button type="submit">Send</button>
+    <button class="form-submit-button" type="submit">Send</button>
   </form>
 </template>

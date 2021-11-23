@@ -51,17 +51,20 @@ const getMessages = (chatRoom) => {
 
   return messages.map(message => {
     let authorStr = '';
-    let disabledAttr = undefined;
+    // let disabledAttr = undefined;
+    let floatRightClass = 'float-message-right';
     if (message.author.userId !== currentUser._id) {
-      authorStr = `${message.author.username} says:`;
-      disabledAttr = 'disabled';
+      authorStr = `${message.author.username}:`;
+      // disabledAttr = 'disabled';
+      floatRightClass = undefined;
     }
 
     return {
       // keep track of the Mongo _id so we can delete the message elsewhere
       _id: message._id, 
-      disabledAttr,
+      // disabledAttr,
       authorStr,
+      floatRightClass,
       message: message.message
     };
   });
@@ -78,6 +81,8 @@ Template.mainContainer.onCreated(function mainContainerOnCreated() {
   Tracker.autorun(() => {
     this.state.set(IS_CHATROOM_LOADING_STRING, !chatRoomHandler.ready()); 
   });
+
+
 });
 
 Template.mainContainer.events({
@@ -87,7 +92,7 @@ Template.mainContainer.events({
       event.target.dataset.chatroomindex);
   },
   // user logout functionality
-  'click .logout'() {
+  'click .logout-button'() {
     Meteor.logout();
   }
 });
@@ -106,7 +111,7 @@ Template.mainContainer.helpers({
       chatRoomId: chatRoom._id
     }));
   },
-  activeChatRoom_id(){
+  activeChatRoomId(){
     const currentSelectedChatRoom = 
       Template.instance().state.get(SELECTED_CHATROOM_STRING);
     return currentSelectedChatRoom;
@@ -147,7 +152,9 @@ Template.form.events({
     if(text == '') {
       return;
     }
-    const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
+
+    // I guess this is called cheating
+    const chatRoomId = target.nextElementSibling.dataset.chatroomindex;
 
     Meteor.call('chatMessages.insert', chatRoomId, text);
 
@@ -157,7 +164,7 @@ Template.form.events({
 });
 
 Template.message.events({
-  'click .delete-message'() {
+  'click .delete-message-button'() {
     Meteor.call('chatMessages.remove', this._id);
   },
 });
