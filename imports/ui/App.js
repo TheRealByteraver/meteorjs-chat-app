@@ -50,39 +50,26 @@ const getMessages = (chatRoom) => {
     messageFilter, messageSort).fetch();
 
   return messages.map(message => {
-    const author = (message.author.username === currentUser.username) 
-      ? ''
-      : `${message.author.username} says:`;
+    let authorStr = '';
+    let disabledAttr = undefined;
+    if (message.author.userId !== currentUser._id) {
+      authorStr = `${message.author.username} says:`;
+      disabledAttr = 'disabled';
+    }
 
     return {
-      // keep track of the Mongo _id so we can manipulate the message elsewhere
+      // keep track of the Mongo _id so we can delete the message elsewhere
       _id: message._id, 
-      // disable message delete button for messages that are not from the
-      // current User:
-      disabledAttr: (message.author.username === currentUser.username) 
-        ? undefined 
-        : 'disabled',
-      author,
+      disabledAttr,
+      authorStr,
       message: message.message
     };
   });
 }
 
-// get all chatRooms in which this user is taking part
-const getCurrentUserChatRooms = () => {
-  const currentUser = getUser();
-  return ChatRoomsCollection.find(
-    // filter: only select chatRooms where this user is taking part
-    { 'userIdList.userId': currentUser._id },
-    // oldest first
-    { sort: { createdAt: 1 } }
-  );
-}
-
 Template.mainContainer.onCreated(function mainContainerOnCreated() { 
-  this.state = new ReactiveDict();
+    this.state = new ReactiveDict();
 
-  // ?
   const chatMessageHandler = Meteor.subscribe('chatMessages');
   const chatRoomHandler = Meteor.subscribe('chatRooms');
   Tracker.autorun(() => {
@@ -91,7 +78,6 @@ Template.mainContainer.onCreated(function mainContainerOnCreated() {
   Tracker.autorun(() => {
     this.state.set(IS_CHATROOM_LOADING_STRING, !chatRoomHandler.ready()); 
   });
-
 });
 
 Template.mainContainer.events({
@@ -100,52 +86,42 @@ Template.mainContainer.events({
     instance.state.set(SELECTED_CHATROOM_STRING, 
       event.target.dataset.chatroomindex);
   },
+  // user logout functionality
   'click .logout'() {
     Meteor.logout();
   }
 });
 
 Template.mainContainer.helpers({
-  isLoading() { // ??? not used
-    const instance = Template.instance();
-    return instance.state.get(IS_LOADING_STRING);
-  },
   chatRoomTitles() {
-    const chatRooms = getCurrentUserChatRooms();
-
+    const currentUser = getUser();
+    const chatRooms = ChatRoomsCollection.find(
+      // filter: only select chatRooms where this user is taking part
+      { 'userIdList.userId': currentUser._id },
+      // oldest first
+      { sort: { createdAt: 1 } }
+    );
     return chatRooms.map(chatRoom => ({
-      talkingTo: getTalkingToStr(chatRoom),
-      _id: chatRoom._id
+      chatRoomTitle: getTalkingToStr(chatRoom),
+      chatRoomId: chatRoom._id
     }));
   },
-  chatRooms() { // not used
-    const chatRooms = getCurrentUserChatRooms();
-    return chatRooms.map(chatRoom => {
-      return {
-        ...chatRoom,   
-        talkingTo: getTalkingToStr(chatRoom),
-        messages: getMessages(chatRoom),
-      };
-    });
-  },
-  activeChatRoom() {
+  activeChatRoom_id(){
     const currentSelectedChatRoom = 
       Template.instance().state.get(SELECTED_CHATROOM_STRING);
-
-    if (!currentSelectedChatRoom) {
-      return [{
-        _id: 0,   
-        talkingTo: '',
-        messages: [],
-      }];
-    }
+    return currentSelectedChatRoom;
+  },
+  talkingTo(){
+    const currentSelectedChatRoom = 
+    Template.instance().state.get(SELECTED_CHATROOM_STRING);
     const chatRoom = ChatRoomsCollection.findOne( { _id: currentSelectedChatRoom } );
-    // todo: don't return array of chatRooms, it's always only one chatRoom
-    return [{
-      ...chatRoom,   
-      talkingTo: getTalkingToStr(chatRoom),
-      messages: getMessages(chatRoom),
-    }];
+    return getTalkingToStr(chatRoom);
+  },
+  messages() {
+    const currentSelectedChatRoom = 
+    Template.instance().state.get(SELECTED_CHATROOM_STRING);
+    const chatRoom = ChatRoomsCollection.findOne( { _id: currentSelectedChatRoom } );
+    return getMessages(chatRoom);
   },
   isUserLogged() {
     return isUserLogged();
@@ -171,9 +147,7 @@ Template.form.events({
     if(text == '') {
       return;
     }
-    // const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
-    const chatRoomId = 
-      Template.instance().data._id; // ??? why does this work?
+    const chatRoomId = target.previousElementSibling.dataset.chatroomindex;
 
     Meteor.call('chatMessages.insert', chatRoomId, text);
 

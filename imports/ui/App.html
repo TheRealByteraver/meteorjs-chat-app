@@ -15,15 +15,28 @@
       <div class="chatapp-container">
         <ul class="chatroom-title-container">
           {{#each chatRoomTitles}}
-            <li><h3 class="chatroom-title" data-chatRoomIndex="{{_id}}">{{talkingTo}}</h3></li>
+            <li>
+              <h3 
+                class="chatroom-title" 
+                data-chatRoomIndex="{{chatRoomId}}">
+                  {{chatRoomTitle}}
+              </h3>
+            </li>
           {{/each}}
         </ul>
 
         <ul class="chatroom-content-container">
-          {{#each activeChatRoom}}
-            {{> chatRoom}}
-          {{/each}}
-          <!-- {{> activeChatRoom}} -->
+          <li class="chatroom-container">
+            {{#if talkingTo}}   
+            <h3>Chatting with {{talkingTo}}</h3>
+            <ul class="" data-chatRoomIndex="{{activeChatRoom_id}}">
+              {{#each messages}}
+                {{> message}}
+              {{/each}}
+            </ul>
+            {{> form}}
+            {{/if}}
+          </li>
         </ul>  
       </div>
     {{else}}
@@ -32,40 +45,21 @@
   </div>
 </template>
 
-<!-- <template name="activeChatRoom">
-  <li class="chatroom-container">   
-    <h3>Chatting with {{talkingTo}}</h3>
-    <ul class="" data-chatRoomIndex="{{_id}}">
-      {{#each messages}}
-        {{> message}}
-      {{/each}}
-    </ul>
-    {{> form}}
-  </li>
-</template> -->
-
-<template name="chatRoom">
-  <li class="chatroom-container">   
-    <h3>Chatting with {{talkingTo}}</h3>
-    <ul class="" data-chatRoomIndex="{{_id}}">
-      {{#each messages}}
-        {{> message}}
-      {{/each}}
-    </ul>
-    {{> form}}
-  </li>
-</template>
-
 <template name="message">
   <li class="message-and-button-container">
-    {{author}} {{message}}
+    {{authorStr}} {{message}}
     <button class="delete-message" {{disabledAttr}}>&times;</button>
   </li>
 </template>
 
 <template name="form">
   <form class="chat-form">
-    <input class="form-text-input" type="text" name="text" placeholder="Type your message here" />
+    <input 
+      class="form-text-input" 
+      type="text" 
+      name="text" 
+      placeholder="Type your message here" 
+    />
     <button type="submit">Send</button>
   </form>
 </template>

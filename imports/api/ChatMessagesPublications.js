@@ -5,7 +5,6 @@ import { ChatMessagesCollection } from '../db/ChatMessagesCollection';
 // note: do not use an arrow function for 'publishChatMessages' here
 // or 'this' will not work
 Meteor.publish('chatMessages', function publishChatMessages() {
-  console.log('this.userId inside ChatMessagesPublications = ', this.userId);
 
   // get all chatRooms in which the user participates
   const chatRooms = ChatRoomsCollection.find( 
